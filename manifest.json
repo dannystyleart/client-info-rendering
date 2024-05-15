@@ -1,0 +1,10 @@
+{
+    "theme_color": "#069",
+    "background_color": "#ffffff",
+    "orientation": "any",
+    "display": "standalone",
+    "dir": "auto",
+    "lang": "en-US",
+    "name": "Client Info Renderer",
+    "short_name": "CIR"
+}
