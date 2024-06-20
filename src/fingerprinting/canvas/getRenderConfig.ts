@@ -1,17 +1,14 @@
-import type { RenderingChallangeConfig } from "./useCanvasRenderer.types";
-
-const SYSTEM_FONTS =
-  'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"';
+import type { RenderingChallangeConfig } from "./types";
 
 export const getRenderConfig = (config?: RenderingChallangeConfig) => {
   const {
-    textContent = "Canvas challange 1.0",
+    textContent = `Canvas challange 1.0 ${String.fromCharCode(55357, 56835)}`,
     textColor = "#069",
     textShadow = "rgba(102, 204, 0, .63)",
     contrastColor = "#F60",
     contrastWidth,
     fontSize = 14,
-    fontFamily = SYSTEM_FONTS
+    fontFamily = '"Times New Roman"'
   } = config || {};
 
   return {

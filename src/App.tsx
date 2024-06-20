@@ -1,48 +1,65 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { useCanvasRenderer } from "./fingerprinting/useCanvasRenderer";
-import { useRendererInfo } from "./fingerprinting/useRendererInfo";
+import React, { useEffect, useState } from "react";
 
 import "./styles.css";
-import { createShaHash, getCanvasConfigFromQueryString } from "./utils";
 import { CopyContents } from "./copyContents";
+import { DeviceFingerPrintComponents, getComponents, getFingerprintHash } from "./fingerprinting";
+import { getCanvasConfigFromQueryString } from "./customCanvasConfig";
 
 export default function App() {
-  const [rendererInfoError, rendererInfo] = useRendererInfo();
-  const canvasSettings = useMemo(() => getCanvasConfigFromQueryString(), []);
-  const canvasDataUrl = useCanvasRenderer(canvasSettings);
-  const [deviceId, setDeviceId] = useState<string | undefined>();
+  const [components, setComponents] = useState<DeviceFingerPrintComponents>();
+  const [deviceId, setDeviceId] = useState<string>();
 
-  useEffect(() => {
-    if (rendererInfo && canvasDataUrl) {
-      createShaHash(
-        `${JSON.stringify(rendererInfo)}${canvasDataUrl}`
-      ).then((newId) => setDeviceId(newId));
-    }
-  }, [rendererInfo, canvasDataUrl]);
+  const copyDebugInfo = () => {
+    const contents = JSON.stringify({
+      ...components,
+      deviceId,
+    }, null, 2);
+
+    navigator.clipboard.writeText(contents);
+
+    alert('Debug information copied!');
+  }
+
+  useEffect(()=>{
+    const components = getComponents(
+      getCanvasConfigFromQueryString(),
+    );
+
+    getFingerprintHash(components).then((fingerprint)=>{
+      setComponents(components);
+      setDeviceId(fingerprint);
+    });
+  },[])
 
   return (
     <>
       <h1>Device</h1>
       <p><span id="device-id">{deviceId}</span> <CopyContents targetId="device-id" /></p>
 
-      <h2>WebGL Renderer info <CopyContents targetId="renderer-info">Copy renderer info</CopyContents></h2>
-      <code id="renderer-info" className={rendererInfoError && "error"}>
-        {JSON.stringify(rendererInfoError ?? rendererInfo, null, 2)}
+      <button onClick={copyDebugInfo}>Copy Debug information</button>
+
+      <h2>Screen</h2>
+      <code id="screen">
+        {[components?.screen?.width, components?.screen?.height].join(' x ')}
+      </code>
+
+      <h2>Language</h2>
+      <code id="language">
+        {components?.languages?.join(', ')}
+      </code>
+
+      <h2>WebGL Renderer info</h2>
+      <code id="renderer-info">
+        {JSON.stringify(components?.webgl, null, 2)}
       </code>
 
       <h2>Canvas rendering challange</h2>
-      <CopyContents targetId="canvas-data-url">Copy data url </CopyContents>
-
       <div id="canvas-details">
         <div>
-          {canvasDataUrl && <img src={canvasDataUrl} alt="Rendered canvas image" />}
-        </div>
-        <div>
-          <code>{JSON.stringify(canvasSettings, null, 2)}</code>
+          {components?.canvas && <img src={components?.canvas} alt="Rendered canvas image" />}
         </div>
       </div>
-
-      <code id="canvas-data-url">{JSON.stringify(canvasDataUrl, null, 2)}</code>
+      <code id="canvas-data-url">{JSON.stringify(components?.canvas, null, 2)}</code>
     </>
   );
 }
