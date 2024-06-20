@@ -1,4 +1,4 @@
-import { ChangeEvent, useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 
 declare global {
     interface Screen extends ScreenOrientation {
