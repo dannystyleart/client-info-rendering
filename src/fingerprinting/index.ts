@@ -23,9 +23,9 @@ export const getFingerprintHash = (components?: DeviceFingerPrintComponents) => 
     } = components || getComponents();
 
     const elements: Array<string> = [
-        languages.join('+'),
-        JSON.stringify(screen),
-        JSON.stringify(webgl),
+        languages.join(','),
+        [screen.width, screen.height].join('x'),
+        webgl.renderer,
         canvas + '',
     ];
 
