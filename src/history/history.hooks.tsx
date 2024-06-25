@@ -1,10 +1,19 @@
 import { useContext } from "react"
 import { HistoryContext } from "./history.context"
-import { HistoryRecord, LOCAL_STORAGE_ENTRY_KEY } from "./history.types";
+import { HistoryRecord, LOCAL_STORAGE_CONSENT_KEY, LOCAL_STORAGE_ENTRY_KEY } from "./history.types";
 
 export const useHistory = () => useContext(HistoryContext);
 
 export const useHistoryStorage = () => {
+    const fetchConsent = () => {
+        const value = localStorage.getItem(LOCAL_STORAGE_CONSENT_KEY);
+        return value === 'true';
+    };
+
+    const persistConsent = (canStore: boolean) => {
+        localStorage.setItem(LOCAL_STORAGE_CONSENT_KEY, JSON.stringify(canStore === true));
+    };
+
     const fetchRecords = () => {
         const values = localStorage.getItem(LOCAL_STORAGE_ENTRY_KEY);
 
@@ -19,7 +28,7 @@ export const useHistoryStorage = () => {
         }
     };
 
-    const saveRecords = (input: Array<HistoryRecord>) => {
+    const persistRecords = (input: Array<HistoryRecord>) => {
         try {
             localStorage.setItem(LOCAL_STORAGE_ENTRY_KEY, JSON.stringify(input));
             return true;
@@ -33,5 +42,5 @@ export const useHistoryStorage = () => {
         localStorage.setItem(LOCAL_STORAGE_ENTRY_KEY, '');
     };
 
-    return { fetchRecords, saveRecords, deleteRecords }
+    return { fetchRecords, persistRecords, deleteRecords, fetchConsent, persistConsent }
 };
