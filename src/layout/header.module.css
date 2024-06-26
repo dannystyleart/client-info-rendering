@@ -1,0 +1,7 @@
+.root {
+    padding-inline: .5rem;
+    border-bottom: 4px solid;
+    position: sticky;
+    top: 0px;
+    background: white;
+}
