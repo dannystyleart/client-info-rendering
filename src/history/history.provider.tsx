@@ -1,50 +1,85 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import { HistoryContext } from "./history.context";
 import { HistoryContextType, HistoryRecord } from "./history.types";
 import { useHistoryStorage } from "./history.hooks";
 
+const getDescendingOrder = (list: Array<HistoryRecord>) => list.sort((left, right) => {
+    return left.timestamp > right.timestamp ? -1 : 1;
+});
+
 export const HistoryContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-    const { deleteRecords, fetchRecords, persistRecords, fetchConsent, persistConsent } = useHistoryStorage();
-    const [records, setRecords] = useState<HistoryContextType['records']>([]);
+    const storageApi = useHistoryStorage();
     const [consent, setConsentState] = useState<boolean>(false);
+    const [recordsStore, setRecordsStore] = useState<HistoryContextType['records']>([]);
     const [initialized, setInitializedState] = useState<boolean>(false)
+    const [currentRecord, setCurrentRecordState] = useState<HistoryRecord>();
 
-    useEffect(() => {
-        const consentValue = fetchConsent();
-
-        setConsentState(consentValue);
-
-        if (consentValue) {
-            const recordsFetched = fetchRecords();
-            setRecords(recordsFetched);
+    const loadRecords = (isConsented: boolean) => {
+        if (!isConsented) {
+            setRecordsStore([]);
+            return;
         }
 
-        setInitializedState(true)
+        const records = storageApi.records.fetch();
+        setRecordsStore(records);
+    };
+
+    useEffect(() => {
+        const storedConsent = storageApi.consent.fetch();
+        setConsentState(storedConsent);
+        loadRecords(storedConsent);
+        setInitializedState(true);
     }, []);
 
-    const saveRecord = useCallback((record: HistoryRecord) => {
-        const nextValue = records.concat(record);
+    const toggleConsent = useCallback((isConsented: boolean) => {
+        setConsentState(isConsented);
+    }, []);
 
-        setRecords(() => nextValue);
+    useEffect(() => {
+        if (initialized) {
+            storageApi.consent.persist(consent);
 
-        if (consent) persistRecords(nextValue);
-    }, [consent, setRecords, records]);
+            if (!consent) {
+                storageApi.records.delete();
+                setRecordsStore([]);
+            } else if (consent) {
+                loadRecords(consent);
+            }
+        }
 
-    const clearRecords = useCallback(() => {
-        deleteRecords();
-        setRecords([]);
-    }, [setRecords, deleteRecords]);
+    }, [consent, initialized]);
 
-    const setConsent = useCallback((canStore: boolean) => {
-        setConsentState(canStore);
+    const records = useMemo(() => {
+        if (!initialized) return [];
+        if (!consent) return !!currentRecord ? [currentRecord] : [];
 
-        if (!canStore) deleteRecords();
+        const currentAlreadyStored = recordsStore.some((stored) => {
+            return stored.timestamp === currentRecord?.timestamp && stored.deviceId === currentRecord?.deviceId;
+        });
 
-        persistConsent(canStore);
-    }, [setConsentState, deleteRecords, persistConsent])
+        if (!currentRecord || currentAlreadyStored) return getDescendingOrder(recordsStore);
 
+        return getDescendingOrder(recordsStore.concat(currentRecord));
+
+    }, [initialized, consent, recordsStore, currentRecord]);
+
+    const setCurrentRecord = useCallback((record: HistoryRecord) => {
+        setCurrentRecordState(record);
+
+        if (consent) {
+            storageApi.records.persist(
+                getDescendingOrder(recordsStore.concat(record))
+            );
+        }
+    }, [consent, recordsStore])
     return (
-        <HistoryContext.Provider value={{ initialized, saveRecord, deleteRecords: clearRecords, records, consent, setConsent }}>
+        <HistoryContext.Provider value={{
+            initialized,
+            records,
+            setCurrentRecord,
+            consent,
+            toggleConsent
+        }}>
             {children}
         </HistoryContext.Provider>
     )

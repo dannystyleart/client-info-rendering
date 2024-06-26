@@ -17,8 +17,8 @@ export const useHistoryStorage = () => {
     const fetchRecords = () => {
         const values = localStorage.getItem(LOCAL_STORAGE_ENTRY_KEY);
 
-        if(!values) return [] as Array<HistoryRecord>;
-        
+        if (!values) return [] as Array<HistoryRecord>;
+
         try {
             const entries = JSON.parse(values);
             return entries as Array<HistoryRecord>;
@@ -42,5 +42,8 @@ export const useHistoryStorage = () => {
         localStorage.setItem(LOCAL_STORAGE_ENTRY_KEY, '');
     };
 
-    return { fetchRecords, persistRecords, deleteRecords, fetchConsent, persistConsent }
+    return {
+        records: { fetch: fetchRecords, persist: persistRecords, delete: deleteRecords },
+        consent: { fetch: fetchConsent, persist: persistConsent }
+    };
 };

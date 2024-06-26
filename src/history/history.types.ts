@@ -9,11 +9,10 @@ export type HistoryRecord = {
 
 export type HistoryContextType = {
     initialized: boolean;
-    consent: boolean;
-    setConsent: (consented: boolean) => void;
+    setCurrentRecord: (record: HistoryRecord) => void;
     records: Array<HistoryRecord>;
-    saveRecord: (input: HistoryRecord) => void;
-    deleteRecords: () => void;
+    consent: boolean;
+    toggleConsent: (consented: boolean) => void;
 };
 
 export const LOCAL_STORAGE_CONSENT_KEY = 'client_info_experiment_store_consent'

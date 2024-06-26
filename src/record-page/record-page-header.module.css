@@ -1,0 +1,22 @@
+.pageCounter {
+    font-weight: 800;
+    letter-spacing: -0.1ch;
+}
+
+.flexLastRight {
+    margin-left: auto;
+}
+
+.titleCell {
+    display: block;
+}
+
+.titleCell h4,
+.titleCell p {
+    margin: 0;
+}
+
+.titleCell p {
+    font-size: .75rem;
+    font-weight: 500;
+}

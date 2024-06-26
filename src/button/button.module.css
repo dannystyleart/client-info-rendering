@@ -1,0 +1,39 @@
+:root {
+    --color-base: #fff;
+    --color-accent: #000;
+    --color-disabled: rgba(0, 0, 0, 0.3);
+
+    --padding-block: .5rem;
+    --padding-inline: .75rem;
+    --font-size: .75rem;
+    --border-size: 2px;
+}
+
+.root {
+    border: var(--border-size) solid var(--color-accent);
+    font-weight: 800;
+    padding: var(--padding-block) var(--padding-inline);
+    font-size: var(--font-size);
+    background: var(--color-base);
+}
+
+.root:disabled {
+    cursor: not-allowed;
+    border-color: var(--color-disabled);
+    color: var(--color-disabled);
+}
+
+.root:not(:disabled):hover,
+.root:not(:disabled):active {
+    border-color: var(--color-accent);
+    background: var(--color-accent);
+    color: var(--color-base);
+}
+
+.large {
+    font-weight: 600;
+    --border-size: 4px;
+    --padding-block: 1rem;
+    --padding-inline: 1.5rem;
+    --font-size: 1rem;
+}
