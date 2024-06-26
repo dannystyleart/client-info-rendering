@@ -8,6 +8,7 @@ export type HistoryRecord = {
 }
 
 export type HistoryContextType = {
+    initialized: boolean;
     consent: boolean;
     setConsent: (consented: boolean) => void;
     records: Array<HistoryRecord>;

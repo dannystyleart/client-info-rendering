@@ -4,43 +4,47 @@ import { HistoryContextType, HistoryRecord } from "./history.types";
 import { useHistoryStorage } from "./history.hooks";
 
 export const HistoryContextProvider: React.FC<React.PropsWithChildren<{}>> = ({ children }) => {
-    const {deleteRecords, fetchRecords, persistRecords, fetchConsent, persistConsent } =  useHistoryStorage();
+    const { deleteRecords, fetchRecords, persistRecords, fetchConsent, persistConsent } = useHistoryStorage();
     const [records, setRecords] = useState<HistoryContextType['records']>([]);
     const [consent, setConsentState] = useState<boolean>(false);
+    const [initialized, setInitializedState] = useState<boolean>(false)
 
-    useEffect(()=>{
+    useEffect(() => {
         const consentValue = fetchConsent();
+
         setConsentState(consentValue);
 
-        if(consentValue){
+        if (consentValue) {
             const recordsFetched = fetchRecords();
             setRecords(recordsFetched);
         }
-    },[]);
 
-    const saveRecord = useCallback((record: HistoryRecord)=>{
+        setInitializedState(true)
+    }, []);
+
+    const saveRecord = useCallback((record: HistoryRecord) => {
         const nextValue = records.concat(record);
 
-        setRecords(()=> nextValue);
+        setRecords(() => nextValue);
 
-        if(consent) persistRecords(nextValue);
-    },[setRecords, records]);
+        if (consent) persistRecords(nextValue);
+    }, [consent, setRecords, records]);
 
-    const clearRecords = useCallback(()=>{
+    const clearRecords = useCallback(() => {
         deleteRecords();
         setRecords([]);
-    },[setRecords, deleteRecords]);
+    }, [setRecords, deleteRecords]);
 
-    const setConsent = useCallback((canStore: boolean)=>{
+    const setConsent = useCallback((canStore: boolean) => {
         setConsentState(canStore);
 
-        if(!canStore) deleteRecords();
+        if (!canStore) deleteRecords();
 
         persistConsent(canStore);
-    },[setConsentState, deleteRecords, persistConsent])
+    }, [setConsentState, deleteRecords, persistConsent])
 
     return (
-        <HistoryContext.Provider value={{saveRecord, deleteRecords: clearRecords, records, consent, setConsent}}>
+        <HistoryContext.Provider value={{ initialized, saveRecord, deleteRecords: clearRecords, records, consent, setConsent }}>
             {children}
         </HistoryContext.Provider>
     )
