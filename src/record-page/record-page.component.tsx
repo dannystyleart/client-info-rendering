@@ -52,7 +52,7 @@ export const RecordPage = () => {
                 </section>
 
                 <section>
-                    <h2>WebGL Rendere</h2>
+                    <h2>WebGL Renderer</h2>
                     <RecordDetail>
                         {currentRecord?.rendererInfo || 'N/A'}
                     </RecordDetail>
