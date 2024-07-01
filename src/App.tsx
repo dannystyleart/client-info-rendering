@@ -24,10 +24,10 @@ export default function App() {
           timestamp: Date.now(),
           deviceId: fingerprint,
           rendererInfo: components.webgl.renderer,
-          screenSize: [components.screen.width, components.screen.height].join('x'),
           languages: components.languages.join(','),
-          textImage: components.canvas + ''
-        }
+          textImage: components.canvas + '',
+          drawnApart: components.drawnApart + ''
+        };
 
         setCurrentRecord(record);
       });

@@ -20,6 +20,12 @@ export const RecordPage = () => {
         window.alert('Copied!')
     }, [currentRecord])
 
+    const factorNames = useMemo(()=>{
+        if(!currentRecord) return null;
+
+        return Object.keys(currentRecord).filter((key)=>!['timestamp', 'deviceId'].includes(key)).join(' + ');
+    },[currentRecord])
+
     return (
         <>
             <RecordPageHeader currentRecord={currentRecord} />
@@ -31,7 +37,9 @@ export const RecordPage = () => {
 
                 <section>
                     <h2>Device Id</h2>
-
+                    <RecordDetail>
+                        Generated of: {factorNames}
+                    </RecordDetail>
                     <RecordDetail>
                         {currentRecord?.deviceId || 'N/A'}
                     </RecordDetail>
@@ -55,6 +63,13 @@ export const RecordPage = () => {
                     <h2>WebGL Renderer</h2>
                     <RecordDetail>
                         {currentRecord?.rendererInfo || 'N/A'}
+                    </RecordDetail>
+                </section>
+
+                <section>
+                    <h2>WebGL 'Drawn Apart'</h2>
+                    <RecordDetail>
+                        {currentRecord?.drawnApart || 'N/A'}
                     </RecordDetail>
                 </section>
 

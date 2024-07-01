@@ -4,7 +4,8 @@ export type HistoryRecord = {
     textImage: string;
     rendererInfo: string;
     languages: string;
-    screenSize: string;
+    screenSize?: string;
+    drawnApart?: string;
 }
 
 export type HistoryContextType = {
