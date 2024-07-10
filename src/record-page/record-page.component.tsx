@@ -67,6 +67,13 @@ export const RecordPage = () => {
                 </section>
 
                 <section>
+                    <h2>Audio sample</h2>
+                    <RecordDetail>
+                        {currentRecord?.audioSample || 'N/A'}
+                    </RecordDetail>
+                </section>
+
+                <section>
                     <h2>WebGL 'Drawn Apart'</h2>
                     <RecordDetail>
                         {currentRecord?.drawnApart || 'N/A'}
@@ -75,7 +82,7 @@ export const RecordPage = () => {
 
                 <section>
                     <h2>Canvas image</h2>
-                    <RecordDetailImage src={currentRecord?.textImage} />
+                    <RecordDetailImage src={currentRecord?.textImage}/>
                     <RecordDetail>
                         {currentRecord?.textImage || 'N/A'}
                     </RecordDetail>

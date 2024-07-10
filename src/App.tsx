@@ -15,21 +15,22 @@ export default function App() {
 
   useEffect(() => {
     if (initialized) {
-      const components = getComponents(
+      getComponents(
         getCanvasConfigFromQueryString(),
-      );
+      ).then((components) => {
+        getFingerprintHash(components).then((fingerprint) => {
+          const record: HistoryRecord = {
+            timestamp: Date.now(),
+            deviceId: fingerprint,
+            rendererInfo: components.webgl.renderer,
+            languages: components.languages.join(','),
+            textImage: components.canvas + '',
+            drawnApart: components.drawnApart + '',
+            audioSample: components.audio + ''
+          };
 
-      getFingerprintHash(components).then((fingerprint) => {
-        const record: HistoryRecord = {
-          timestamp: Date.now(),
-          deviceId: fingerprint,
-          rendererInfo: components.webgl.renderer,
-          languages: components.languages.join(','),
-          textImage: components.canvas + '',
-          drawnApart: components.drawnApart + ''
-        };
-
-        setCurrentRecord(record);
+          setCurrentRecord(record);
+        });
       });
     }
   }, [initialized]);

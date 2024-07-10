@@ -6,6 +6,7 @@ export type HistoryRecord = {
     languages: string;
     screenSize?: string;
     drawnApart?: string;
+    audioSample?: string;
 }
 
 export type HistoryContextType = {
