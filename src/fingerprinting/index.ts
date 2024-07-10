@@ -19,18 +19,12 @@ export type DeviceFingerPrintComponents = ReturnType<typeof getComponents>;
 export const getFingerprintHash = (components?: DeviceFingerPrintComponents) => {
     const {
         canvas,
-        languages,
-        screen,
         webgl,
-        drawnApart
     } = components || getComponents();
 
     const elements: Array<string> = [
-        drawnApart+'',
-        languages.join(','),
-        [screen.width, screen.height].join('x'),
-        webgl.renderer,
         canvas + '',
+        webgl.renderer,
     ];
 
     return createShaHash(elements.join('|'));
