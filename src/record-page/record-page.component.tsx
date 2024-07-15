@@ -10,7 +10,7 @@ export const RecordPage = () => {
     const navigation = useHistoryNavigation();
     const { records } = useHistory();
 
-    const currentRecord = useMemo(() => records[navigation.currentIndex], [navigation.currentIndex]);
+    const currentRecord = useMemo(() => records[navigation.currentIndex], [navigation.currentIndex, records]);
 
     const handleCopyRecordDetails = useCallback(() => {
         window.navigator.clipboard.writeText(
