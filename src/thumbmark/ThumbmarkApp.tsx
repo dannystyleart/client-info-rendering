@@ -10,7 +10,7 @@ export const ThumbmarkApp = () => {
 
     useEffect(() => {
 
-        setOption('exclude', ['screen', 'system.browser.version']);
+        setOption('exclude', ['screen', 'system.browser.version', 'plugins']);
 
         getFingerprint(true).then((values) => {
             setFingerprint(values);
