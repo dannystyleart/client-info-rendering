@@ -1,16 +1,17 @@
-import { getFingerprint } from '@thumbmarkjs/thumbmarkjs';
-import { useCallback, useEffect, useState } from 'react';
-import { Intro, useIntroState } from '../intro';
+import { getFingerprint, setOption } from '@thumbmarkjs/thumbmarkjs';
+import { useEffect, useState } from 'react';
+import { createShaHash } from '../fingerprinting/utils';
 import { Container, Header } from '../layout';
 import { RecordDetail } from '../record-page/record-detail.component';
-import { createShaHash } from '../fingerprinting/utils';
-import { ButtonGroup } from '../button';
 
 export const ThumbmarkApp = () => {
     const [fingerprint, setFingerprint] = useState<any>();
     const [deviceId, setDeviceId] = useState<string>();
 
     useEffect(() => {
+
+        setOption('exclude', ['screen', 'system.browser.version']);
+
         getFingerprint(true).then((values) => {
             setFingerprint(values);
 
