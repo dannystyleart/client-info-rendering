@@ -1,0 +1,1 @@
+export { ThumbmarkApp } from './ThumbmarkApp';
