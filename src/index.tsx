@@ -14,6 +14,7 @@ root.render(
       <BrowserRouter basename="/client-info-rendering">
         <Routes>
           <Route path="/" element={<ThumbmarkApp />} />
+          <Route path="/thumbmark" element={<ThumbmarkApp />} />
           <Route path="v4"element={<App />} />
           <Route path="v3"element={<App />} />
           <Route path="v2"element={<App />} />
